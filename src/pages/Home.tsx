@@ -1,7 +1,12 @@
+import HeroSection from "../components/HeroSection/HeroSection";
+import MyConsumption from "../components/MyConsumption/MyConsumption";
+
 const Home = () => {
     return (
-        <div className="dark:bg-stone-950 h-screen p-[5vh]">
-        </div>
+        <>
+            <HeroSection />
+            <MyConsumption />
+        </>
     );
 };
 
