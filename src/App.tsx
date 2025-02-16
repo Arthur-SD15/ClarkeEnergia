@@ -1,8 +1,8 @@
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom'
-import LoginPage from './pages/Login'
-import Register from './pages/Register'
-import MyConsumption from './components/MyConsumption/MyConsumption'
 import ProtectedRoute from './components/ProtectedRoute'
+import Login from './pages/Login'
+import Register from './pages/Register'
+import Home from './pages/Home'
 
 function App() {
   return (
@@ -10,12 +10,12 @@ function App() {
       <Routes>
         <Route
           path="/"
-          element={<ProtectedRoute element={<LoginPage />} isLoginRoute={true} />}
+          element={<ProtectedRoute element={<Login />} isLoginRoute={true} />}
         />
         <Route path="/register" element={<Register />} />
         <Route
           path="/home"
-          element={<ProtectedRoute element={<MyConsumption />} />}
+          element={<ProtectedRoute element={<Home />} />}
         />
       </Routes>
     </Router>

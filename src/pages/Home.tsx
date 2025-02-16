@@ -1,12 +1,12 @@
-import HeroSection from "../components/HeroSection/HeroSection";
-import MyConsumption from "../components/MyConsumption/MyConsumption";
+import Header from "../components/Header/Header";
+import SearchSupplier from "../components/SearchSupplier/SearchSupplier";
 
 const Home = () => {
     return (
-        <>
-            <HeroSection />
-            <MyConsumption />
-        </>
+        <div className="flex flex-col min-h-screen bg-muted">
+            <Header />
+            <SearchSupplier />
+        </div>
     );
 };
 
