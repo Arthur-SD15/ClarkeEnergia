@@ -1,3 +1,4 @@
+import { host } from "../../environmentConfig"
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { ToastContainer, toast } from "react-toastify"
@@ -68,7 +69,7 @@ export function RegisterForm({
     
         try {
             const response = await axios.post(
-                "http://localhost:3000/users",
+                `${host}/users`,
                 {
                   name,
                   surname,

@@ -1,12 +1,13 @@
-import axios from "axios";
+import { host } from "../../environmentConfig";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
 import { AxiosError } from "axios";
 import { cn } from "../../lib/utils";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
-import { useState } from "react";
-import { ToastContainer, toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 export function LoginForm({
   className,
@@ -22,7 +23,7 @@ export function LoginForm({
   
     try {
       const response = await axios.post(
-        "http://localhost:3000/auth/login",
+        `${host}/auth/login`,
         { 
           email, 
           password 

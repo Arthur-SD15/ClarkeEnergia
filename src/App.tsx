@@ -3,6 +3,7 @@ import ProtectedRoute from './components/ProtectedRoute'
 import Login from './pages/Login'
 import Register from './pages/Register'
 import Home from './pages/Home'
+import Manege from './pages/Manege'
 
 function App() {
   return (
@@ -16,6 +17,10 @@ function App() {
         <Route
           path="/home"
           element={<ProtectedRoute element={<Home />} />}
+        />
+        <Route
+          path="/manege-supplier"
+          element={<ProtectedRoute element={<Manege />} />}
         />
       </Routes>
     </Router>

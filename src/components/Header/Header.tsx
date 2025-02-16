@@ -4,7 +4,11 @@ import { ToastContainer, toast } from "react-toastify";
 import { Button } from "../ui/button";
 import { LogOut } from "lucide-react";
 
-const Header = () => {
+interface HeaderProps {
+  admin?: boolean;
+}
+
+const Header: React.FC<HeaderProps> = ({ admin }) => {
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -25,13 +29,27 @@ const Header = () => {
         </h1>
 
         <div className="flex items-center gap-4">
-          <Button
-            variant="outline"
-            size="sm"
-            className="text-gray-900 dark:text-gray-400 border-gray-300 dark:border-gray-600 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700"
-          >
-            Administradores
-          </Button>
+          {admin && (
+            <Button
+              onClick={() => navigate("/home")}
+              variant="outline"
+              size="sm"
+              className="text-gray-900 dark:text-gray-400 border-gray-300 dark:border-gray-600 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700"
+            >
+              Home
+            </Button>
+          )}
+
+          {!admin && (
+            <Button
+              onClick={() => navigate("/manege-supplier")}
+              variant="outline"
+              size="sm"
+              className="text-gray-900 dark:text-gray-400 border-gray-300 dark:border-gray-600 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700"
+            >
+              Administradores
+            </Button>
+          )}
 
           <Button variant="ghost" size="icon" className="rounded-full" onClick={handleLogout}>
             <LogOut className="h-6 w-6 text-gray-900 dark:text-gray-400" />
