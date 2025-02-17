@@ -1,5 +1,10 @@
 ![Banner](/public/images/readme/background-readme.png)
 
+## :warning: Aviso
+
+A aplicação pode sofrer um **cold start** na **primeira requisição** devido à inatividade. Pode levar até 50 segundos para responder à primeira requisição, pois o back-end está hospedado no plano gratuito do Render.
+
+
 ## :bulb: Repositório
 
 Neste repositório, documentarei os aspectos importantes do front-end para o desafio técnico da vaga de Desenvolvedor Júnior na Clarke Energia. Para acessar a documentação do back-end, acesse o repositório clicando [aqui](https://github.com/Arthur-SD15/ClarkeEnergia-API).
@@ -13,7 +18,7 @@ O projeto inicialmente contém uma tela de autenticação na rota `/`, sendo pos
 
 Na seção principal, a rota `/home` é onde o usuário preenche um campo necessário. Nessa própria rota, é possível listar os fornecedores de 5 em 5, com algumas informações importantes para o usuário, que pode optar por salvar ou não os fornecedores desejados.
 
-Por fim, foi criada a rota `/manage-supplier` para o gerenciamento dos fornecedores, incluindo cadastro, edição e remoção. Esse cenário ideal poderia ser realizado pelos membros internos da Clarke Energia.
+Por fim, foi criada a rota `/manage-supplier` para o gerenciamento dos fornecedores, incluindo cadastro, edição e remoção. Além dos filtros para buscar os fornecedores, essa view de Admin poderia estar disponivel para os membros internos da Clarke Energia. De maneira simples, poderia ser criada uma barreira para que estivesse disponível apenas para quem se autenticasse com o e-mail institucional da Clarke.
 
 Vale ressaltar que todas as rotas são protegidas, permitindo acesso apenas a quem possua o token de autenticação, com exceção da rota `/register`.
 
