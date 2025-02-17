@@ -1,0 +1,156 @@
+import { useState } from "react";
+import { Input } from "../ui/input";
+import { Label } from "../ui/label";
+import { Button } from "../ui/button";
+
+interface CreateSupplierModalProps {
+    closeModal: () => void;
+    handleCreateSupplier: (name: string, logo: string, state: string, costPerKwh: number, minKwhLimit: number, totalClients: number, averageRating: number) => void;
+}
+
+const CreateSupplierModal = ({ closeModal, handleCreateSupplier }: CreateSupplierModalProps) => {
+    const [name, setName] = useState("");
+    const [logo, setLogo] = useState("");
+    const [state, setState] = useState("");
+    const [costPerKwh, setCostPerKwh] = useState(0);
+    const [minKwhLimit, setMinKwhLimit] = useState(0);
+    const [totalClients, setTotalClients] = useState(0);
+    const [averageRating, setAverageRating] = useState(0);
+
+    const estados = [
+        { nome: "Acre", sigla: "AC" },
+        { nome: "Alagoas", sigla: "AL" },
+        { nome: "Amapá", sigla: "AP" },
+        { nome: "Amazonas", sigla: "AM" },
+        { nome: "Bahia", sigla: "BA" },
+        { nome: "Ceará", sigla: "CE" },
+        { nome: "Distrito Federal", sigla: "DF" },
+        { nome: "Espírito Santo", sigla: "ES" },
+        { nome: "Goiás", sigla: "GO" },
+        { nome: "Maranhão", sigla: "MA" },
+        { nome: "Mato Grosso", sigla: "MT" },
+        { nome: "Mato Grosso do Sul", sigla: "MS" },
+        { nome: "Minas Gerais", sigla: "MG" },
+        { nome: "Pará", sigla: "PA" },
+        { nome: "Paraíba", sigla: "PB" },
+        { nome: "Paraná", sigla: "PR" },
+        { nome: "Pernambuco", sigla: "PE" },
+        { nome: "Piauí", sigla: "PI" },
+        { nome: "Rio de Janeiro", sigla: "RJ" },
+        { nome: "Rio Grande do Norte", sigla: "RN" },
+        { nome: "Rio Grande do Sul", sigla: "RS" },
+        { nome: "Rondônia", sigla: "RO" },
+        { nome: "Roraima", sigla: "RR" },
+        { nome: "Santa Catarina", sigla: "SC" },
+        { nome: "São Paulo", sigla: "SP" },
+        { nome: "Sergipe", sigla: "SE" },
+        { nome: "Tocantins", sigla: "TO" },
+    ];    
+
+    return (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+            <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-4xl py-8">
+                <h2 className="text-xl font-bold mb-6">Criar Fornecedor</h2>
+                <div>
+                    <div className="grid grid-cols-3 gap-6">
+                        <div>
+                            <Label htmlFor="name">Nome</Label>
+                            <Input
+                                id="name"
+                                type="text"
+                                value={name}
+                                onChange={(e) => setName(e.target.value)}
+                                className="w-full"
+                                required
+                            />
+                        </div>
+                        <div>
+                            <Label htmlFor="logo">Logo URL</Label>
+                            <Input
+                                id="logo"
+                                type="text"
+                                value={logo}
+                                onChange={(e) => setLogo(e.target.value)}
+                                className="w-full"
+                                required
+                            />
+                        </div>
+                        <div>
+                            <Label htmlFor="state">Estado</Label>
+                            <select
+                                id="state"
+                                value={state}
+                                onChange={(e) => setState(e.target.value)}
+                                className="w-full p-2 border border-gray-300 rounded-md"
+                                required
+                            >
+                                <option value="">Selecione um estado</option>
+                                {estados.map((estado) => (
+                                    <option key={estado.sigla} value={estado.sigla}>
+                                        {estado.nome} ({estado.sigla})
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                        <div>
+                            <Label htmlFor="costPerKwh">Custo por kWh</Label>
+                            <Input
+                                id="costPerKwh"
+                                type="number"
+                                value={costPerKwh}
+                                onChange={(e) => setCostPerKwh(Number(e.target.value))}
+                                className="w-full"
+                                required
+                            />
+                        </div>
+                        <div>
+                            <Label htmlFor="minKwhLimit">Limite Mínimo de kWh</Label>
+                            <Input
+                                id="minKwhLimit"
+                                type="number"
+                                value={minKwhLimit}
+                                onChange={(e) => setMinKwhLimit(Number(e.target.value))}
+                                className="w-full"
+                                required
+                            />
+                        </div>
+                        <div>
+                            <Label htmlFor="totalClients">Total de Clientes</Label>
+                            <Input
+                                id="totalClients"
+                                type="number"
+                                value={totalClients}
+                                onChange={(e) => setTotalClients(Number(e.target.value))}
+                                className="w-full"
+                                required
+                            />
+                        </div>
+                        <div>
+                            <Label htmlFor="averageRating">Avaliação Média</Label>
+                            <Input
+                                id="averageRating"
+                                type="number"
+                                value={averageRating}
+                                onChange={(e) => setAverageRating(Number(e.target.value))}
+                                className="w-full"
+                                required
+                            />
+                        </div>
+                    </div>
+                    <div className="flex justify-end gap-2 mt-8">
+                        <Button type="button" variant="outline" onClick={closeModal}>
+                            Cancelar
+                        </Button>
+                        <Button
+                            onClick={() => handleCreateSupplier(name, logo, state, costPerKwh, minKwhLimit, totalClients, averageRating)}
+                        >
+                            Criar
+                        </Button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+export default CreateSupplierModal;

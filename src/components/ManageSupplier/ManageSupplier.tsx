@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { host } from "../../environmentConfig";
 import { ToastContainer, toast } from "react-toastify";
-import { Edit, Trash, Search, ChevronDown, ChevronUp } from "lucide-react";  
+import { Edit, Trash, ChevronDown, ChevronUp } from "lucide-react";  
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { Button } from "../ui/button";
@@ -9,6 +9,7 @@ import { AxiosError } from 'axios';
 import axios from "axios";
 import Pagination from "../ui/pagination";
 import DeleteSupplierModal from "../Modals/DeleteSupplierModal";
+import CreateSupplierModal from "../Modals/CreateSupplierModal";
 
 interface Supplier {
     id: string;
@@ -27,7 +28,7 @@ const ManageSupplier = () => {
     const [suppliers, setSuppliers] = useState<Supplier[]>([]);
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-    const [modalAction, setModalAction] = useState<"edit" | "delete" | "visualizar" | null>(null);
+    const [modalAction, setModalAction] = useState<"edit" | "delete" | "visualizar" | "create" | null>(null);
     const [selectedSupplier, setSelectedSupplier] = useState<Supplier | null>(null);
 
     const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
@@ -89,7 +90,7 @@ const ManageSupplier = () => {
         setCurrentPage(page);
     };
 
-    const openModal = (action: "edit" | "delete" | "visualizar", supplier: Supplier) => {
+    const openModal = (action: "edit" | "delete" | "visualizar" | "create", supplier: Supplier | null) => {
         setModalAction(action);
         setSelectedSupplier(supplier);
         setIsModalOpen(true);
@@ -101,16 +102,135 @@ const ManageSupplier = () => {
         setSelectedSupplier(null);
     };
 
+    const handleCreateSupplier = async (
+        name: string,
+        logo: string,
+        state: string,
+        costPerKwh: number,
+        minKwhLimit: number,
+        totalClients: number,
+        averageRating: number
+    ) => {
+        const loadingToast = toast.loading("Carregando...");
+
+        if (!name || !logo || !state || !costPerKwh || !minKwhLimit || !totalClients || !averageRating) {
+            toast.update(loadingToast, {
+                render: "Preencha todos os campos.",
+                type: "error",
+                isLoading: false,
+                autoClose: 3000,
+            });
+            return;
+        }
+
+        if (!logo.endsWith(".png") && !logo.endsWith(".jpg")) {
+            toast.update(loadingToast, {
+                render: "URL da logo inválida.",
+                type: "error",
+                isLoading: false,
+                autoClose: 3000,
+            });
+            return;
+        }
+
+        if (averageRating < 1 || averageRating > 5) {
+            toast.update(loadingToast, {
+                render: "Avaliação inválida.",
+                type: "error",
+                isLoading: false,
+                autoClose: 3000,
+            });
+            return;
+        }
+
+        if (totalClients < 0) {
+            toast.update(loadingToast, {
+                render: "Total de clientes inválido.",
+                type: "error",
+                isLoading: false,
+                autoClose: 3000,
+            });
+            return;
+        }
+
+        if (minKwhLimit < 0 || costPerKwh < 0) {
+            toast.update(loadingToast, {
+                render: "Valor inválido.",
+                type: "error",
+                isLoading: false,
+                autoClose: 3000,
+            });
+            return;
+        }
+        
+        try {
+            await axios.post(`${host}/suppliers`, {
+                name,
+                logo,
+                state,
+                costPerKwh,
+                minKwhLimit,
+                totalClients,
+                averageRating,
+            });
+            
+            toast.update(loadingToast, {
+                render: "Fornecedor criado com sucesso!",
+                type: "success",
+                isLoading: false,
+                autoClose: 3000,
+            });
+    
+            fetchSuppliers();
+            closeModal();
+        } catch (error) {
+            if (error instanceof AxiosError) {
+                if (error.response && error.response.status === 400) {
+                    console.error("Erro de requisição inválida", error.response.data.message);
+                    toast.update(loadingToast, {
+                        render: error.response.data.message || "Erro ao criar fornecedor",
+                        type: "error",
+                        isLoading: false,
+                        autoClose: 3000,
+                    });
+                    return;
+                }
+            }
+            console.error("Erro desconhecido", error);
+            toast.update(loadingToast, {
+                render: "Erro ao criar fornecedor",
+                type: "error",
+                isLoading: false,
+                autoClose: 3000,
+            });
+        }
+    }
+
     const handleDelete = async () => {
         if (selectedSupplier) {
+            const loadingToast = toast.loading("Removendo fornecedor...");
+    
             try {
                 await axios.delete(`${host}/suppliers/${selectedSupplier.id}`);
                 setSuppliers(suppliers.filter(supplier => supplier.id !== selectedSupplier.id));
-                toast.success("Fornecedor removido com sucesso!");
+                
+                toast.update(loadingToast, {
+                    render: "Fornecedor removido com sucesso!",
+                    type: "success",
+                    isLoading: false,
+                    autoClose: 3000,
+                });
+    
                 closeModal();
             } catch (error) {
                 console.error("Erro ao remover fornecedor", error);
-                toast.error("Erro ao remover fornecedor");
+                
+                toast.update(loadingToast, {
+                    render: "Erro ao remover fornecedor.",
+                    type: "error",
+                    isLoading: false,
+                    autoClose: 3000,
+                });
             }
         }
     };
@@ -220,6 +340,12 @@ const ManageSupplier = () => {
                             >
                                 Resetar
                             </Button>
+                            <Button
+                                type="button"
+                                onClick={() => openModal("create", null)}
+                            >
+                                Criar Fornecedor
+                            </Button>
                         </div>
                     </div>
                 </div>
@@ -270,12 +396,6 @@ const ManageSupplier = () => {
                                                 >
                                                     <Trash size={20} />
                                                 </button>
-                                                <button 
-                                                    onClick={() => openModal("visualizar", supplier)} 
-                                                    className="text-green-500 hover:text-green-700"
-                                                >
-                                                    <Search size={20} />
-                                                </button>
                                             </td>
                                         </tr>
                                     );
@@ -290,13 +410,20 @@ const ManageSupplier = () => {
                 />
             </div>
 
+            {isModalOpen && modalAction === "create" && (
+                <CreateSupplierModal
+                    closeModal={closeModal}
+                    handleCreateSupplier={handleCreateSupplier}
+                />
+            )}
+
             {isModalOpen && modalAction === "delete" && (
                 <DeleteSupplierModal
                     supplier={selectedSupplier}
                     closeModal={closeModal}
                     handleDelete={handleDelete}
                 />
-            )}
+            )}            
 
             <ToastContainer
                 position="top-right"
