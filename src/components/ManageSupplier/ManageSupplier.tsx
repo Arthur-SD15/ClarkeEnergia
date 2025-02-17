@@ -1,7 +1,11 @@
 import { useEffect, useState } from "react";
 import { host } from "../../environmentConfig";
 import { ToastContainer, toast } from "react-toastify";
-import { Edit, Trash, Search } from "lucide-react";  
+import { Edit, Trash, Search, ChevronDown, ChevronUp } from "lucide-react";  
+import { Input } from "../ui/input";
+import { Label } from "../ui/label";
+import { Button } from "../ui/button";
+import { AxiosError } from 'axios';
 import axios from "axios";
 import Pagination from "../ui/pagination";
 import DeleteSupplierModal from "../Modals/DeleteSupplierModal";
@@ -25,7 +29,16 @@ const ManageSupplier = () => {
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
     const [modalAction, setModalAction] = useState<"edit" | "delete" | "visualizar" | null>(null);
     const [selectedSupplier, setSelectedSupplier] = useState<Supplier | null>(null);
+
+    const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
     const itemsPerPage = 5;
+
+    const [filterName, setFilterName] = useState<string>("");
+    const [filterState, setFilterState] = useState<string>("");
+    const [filterAverageRating, setFilterAverageRating] = useState<string>("");
+    const [filterCostPerKwh, setFilterCostPerKwh] = useState<string>("");
+    const [filterMinKwhLimit, setFilterMinKwhLimit] = useState<string>("");
+    const [filterTotalClients, setFilterTotalClients] = useState<string>("");
 
     const fetchSuppliers = async () => {
         try {
@@ -36,6 +49,32 @@ const ManageSupplier = () => {
             toast.error("Erro ao buscar fornecedores");
         }
     };
+
+    const filterSuppliers = async () => {
+        try {
+            const response = await axios.get(`${host}/suppliers`, {
+                params: {
+                    name: filterName,
+                    state: filterState,
+                    averageRating: filterAverageRating,
+                    costPerKwh: filterCostPerKwh,
+                    minKwhLimit: filterMinKwhLimit,
+                    totalClients: filterTotalClients,
+                }
+            });
+            setSuppliers(response.data);
+        } catch (error) {
+            if (error instanceof AxiosError) {
+                if (error.response && error.response.status === 400) {
+                    console.error("Erro de requisição inválida", error.response.data.message);
+                    toast.error(error.response.data.message || "Erro ao buscar fornecedores");
+                }
+            } else {
+                console.error("Erro desconhecido", error);
+                toast.error("Erro ao buscar fornecedores");
+            }
+        }
+    }
 
     useEffect(() => {
         fetchSuppliers();
@@ -76,9 +115,115 @@ const ManageSupplier = () => {
         }
     };
 
+    const handleResetFilters = () => {
+        setFilterName("");
+        setFilterState("");
+        setFilterAverageRating("");
+        setFilterCostPerKwh("");
+        setFilterMinKwhLimit("");
+        setFilterTotalClients("");
+        fetchSuppliers();
+    };
+
     return (
         <div className="bg-munted p-[5vh] flex flex-col">
-            <div className="w-full mx-auto mt-8">
+            <div className="w-full mx-auto">
+                <div className="bg-white mb-4 p-6 rounded-lg shadow-md">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <div>
+                            <Label htmlFor="name">Nome</Label>
+                            <Input
+                                id="name"
+                                type="text"
+                                name="name"
+                                value={filterName}
+                                onChange={(e) => setFilterName(e.target.value)} 
+                            />
+                        </div>
+                        <div>
+                            <Label htmlFor="state">Estado</Label>
+                            <Input
+                                id="state"
+                                type="text"
+                                name="state"
+                                value={filterState}
+                                onChange={(e) => setFilterState(e.target.value)}
+                            />
+                        </div>
+                        <div>
+                            <Label htmlFor="averageRating">Avaliação Média Mínima</Label>
+                            <Input
+                                id="averageRating"
+                                type="number"
+                                name="averageRating"
+                                value={filterAverageRating}
+                                onChange={(e) => setFilterAverageRating(e.target.value)}
+                            />
+                        </div>
+
+                        {showAdvancedFilters && (
+                            <>
+                                <div>
+                                    <Label htmlFor="costPerKwh">Custo por kWh Máximo</Label>
+                                    <Input
+                                        id="costPerKwh"
+                                        type="number"
+                                        name="costPerKwh"
+                                        value={filterCostPerKwh}
+                                        onChange={(e) => setFilterCostPerKwh(e.target.value)}
+                                    />
+                                </div>
+                                <div>
+                                    <Label htmlFor="minKwhLimit">Limite Mínimo de kWh</Label>
+                                    <Input
+                                        id="minKwhLimit"
+                                        type="number"
+                                        name="minKwhLimit"
+                                        value={filterMinKwhLimit}
+                                        onChange={(e) => setFilterMinKwhLimit(e.target.value)}
+                                    />
+                                </div>
+                                <div>
+                                    <Label htmlFor="totalClients">Total de Clientes</Label>
+                                    <Input
+                                        id="totalClients"
+                                        type="number"
+                                        name="totalClients"
+                                        value={filterTotalClients}
+                                        onChange={(e) => setFilterTotalClients(e.target.value)}
+                                    />
+                                </div>
+                            </>
+                        )}
+                    </div>
+
+                    <div className="flex justify-between items-center mt-4">
+                        <Button
+                            type="button"
+                            variant="outline"
+                            onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
+                            className="flex items-center gap-2"
+                        >
+                            {showAdvancedFilters ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                            {showAdvancedFilters ? "Ocultar Filtros" : "Filtros Avançados"}
+                        </Button>
+                        <div className="flex gap-2">
+                            <Button 
+                                onClick={filterSuppliers}
+                            >
+                                Filtrar
+                            </Button>
+                            <Button
+                                type="button"
+                                variant="outline"
+                                onClick={handleResetFilters}
+                            >
+                                Resetar
+                            </Button>
+                        </div>
+                    </div>
+                </div>
+
                 <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
                     <table className="w-full text-sm text-left text-gray-800 bg-white rounded-lg border border-gray-200">
                         <thead className="text-sm text-gray-700 font-bold bg-gray-100">

@@ -6,6 +6,7 @@ import { Bookmark, BookmarkCheck } from 'lucide-react';
 import axios from 'axios';
 import StarRatings from 'react-star-ratings';
 import Pagination from '../ui/pagination';
+import { Input } from '../ui/input';
 
 interface Supplier {
     id: string;
@@ -112,13 +113,12 @@ const SearchSupplier = () => {
 
             <div className="bg-white rounded-lg shadow-md p-6 w-full mx-auto">
                 <div className="flex flex-col md:flex-row items-center space-y-2 md:space-y-0 md:space-x-2 w-full">
-                    <div className="flex flex-col w-full md:w-10/12 relative">
-                        <input
+                    <div className="flex flex-col w-full md:w-10/12 relative">       
+                        <Input
                             type="number"
                             value={consumption}
                             onChange={handleConsumptionChange}
                             placeholder="Informe o consumo (kWh)"
-                            className="p-2 rounded-lg bg-gray-100 text-gray-800 focus:ring-2 focus:ring-blue-500 focus:outline-none w-full transition-all duration-200 opacity-90 hover:opacity-100 border border-gray-300"
                         />
                         {message && (
                             <p className="text-red-600 font-bold text-sm mt-2 md:absolute md:left-0 md:-bottom-6">
@@ -129,7 +129,7 @@ const SearchSupplier = () => {
                     
                     <Button
                         onClick={fetchSuppliers}
-                        className="bg-blue-600 text-white font-bold p-2 rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:outline-none transition duration-300 w-full md:w-32"
+                        className="w-full md:w-1/12"
                     >
                         Buscar
                     </Button>
@@ -140,7 +140,9 @@ const SearchSupplier = () => {
                             setMessage("");
                             setSuppliers([]);
                         }}
-                        className="bg-red-600 text-white font-bold p-2 rounded-lg hover:bg-red-700 focus:ring-2 focus:ring-red-500 focus:outline-none transition duration-300 w-full md:w-32"
+                        type="button"
+                        variant="outline"
+                        className="w-full md:w-1/12"
                     >
                         Resetar
                     </Button>
