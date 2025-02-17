@@ -12,7 +12,7 @@ Neste repositório, documentarei os aspectos importantes do front-end para o des
 Confira a documentação do back-end, clicando [aqui](https://github.com/Arthur-SD15/ClarkeEnergia-API), para um maior entendimento da estrutura principal do projeto e suas regras de negócio. De maneira geral, o desafio técnico consiste em uma aplicação de escolha de fornecedor, com base no consumo de energia médio informado pelo usuário.
 
 
-## :bulb: Projeto
+## :computer: Projeto
 
 O projeto inicialmente contém uma tela de autenticação na rota `/`, sendo possível se cadastrar manualmente na rota `/register`. A autenticação com o Google é feita por meio do OAuth2, e o cadastro manual armazena a senha criptografada com bcrypt, sendo ambos os processos responsabilidade do back-end.
 
