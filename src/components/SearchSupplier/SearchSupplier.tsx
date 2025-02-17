@@ -2,6 +2,7 @@ import { host } from '../../environmentConfig';
 import { useState } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import { Button } from '../ui/button';
+import { Bookmark, BookmarkCheck } from 'lucide-react';
 import axios from 'axios';
 import StarRatings from 'react-star-ratings';
 import Pagination from '../ui/pagination';
@@ -22,9 +23,22 @@ interface Supplier {
 const SearchSupplier = () => {
     const [consumption, setConsumption] = useState<number>(0);
     const [message, setMessage] = useState<string>("");
+    const [savedSuppliers, setSavedSuppliers] = useState<Supplier[]>([]);
     const [suppliers, setSuppliers] = useState<Supplier[]>([]);
     const [currentPage, setCurrentPage] = useState<number>(1);
     const itemsPerPage = 5;
+
+    const toggleSavedSupplier = (supplier: Supplier) => {
+        const isAlreadySaved = savedSuppliers.some(saved => saved.id === supplier.id);
+    
+        if (isAlreadySaved) {
+            setSavedSuppliers(savedSuppliers.filter(saved => saved.id !== supplier.id));
+            toast.info(`${supplier.name} foi removido dos salvos.`);
+        } else {
+            setSavedSuppliers([...savedSuppliers, supplier]);
+            toast.success(`${supplier.name} foi adicionado aos salvos.`);
+        }
+    };
 
     const handleConsumptionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setConsumption(Number(e.target.value));
@@ -141,45 +155,60 @@ const SearchSupplier = () => {
                                 <th scope="col" className="px-6 py-3 text-left">Fornecedora</th>
                                 <th scope="col" className="px-6 py-3 text-center">Limite Minimo/kWh</th>
                                 <th scope="col" className="px-6 py-3 text-center">Custo/kWh</th>
-                                <th scope="col" className="px-6 py-3 text-right">Avaliação</th>
+                                <th scope="col" className="px-6 py-3 text-center">Avaliação</th>
+                                <th scope="col" className="px-6 py-3 text-right">Salvar</th>
                             </tr>
                         </thead>
                         <tbody>
                             {currentSuppliers.length === 0 ? (
                                 <tr>
-                                    <td colSpan={4} className="px-6 py-3 text-center text-gray-500 font-bold">
+                                    <td colSpan={5} className="px-6 py-3 text-center text-gray-500 font-bold">
                                         Nenhum fornecedor disponível no momento.
                                     </td>
                                 </tr>
                             ) : (
-                                currentSuppliers.map((supplier) => (
-                                    <tr key={supplier.id} className="hover:bg-gray-50 transition-all duration-200">
-                                        <td className="px-6 py-3 text-left flex items-center">
-                                            <img 
-                                                src={supplier.logo} 
-                                                alt="Logo" 
-                                                className="w-8 h-8 mr-2" 
-                                            />
-                                            {supplier.name}
-                                        </td>
-                                        <td className="px-6 py-3 text-center">{supplier.minKwhLimit}</td>
-                                        <td className="px-6 py-3 text-center">R$ {supplier.costPerKwh}</td>
-                                        <td className="px-6 py-3 text-right">
-                                            <StarRatings rating={supplier.averageRating} starRatedColor="#fbbf24" numberOfStars={5} starDimension="20px" starSpacing="1px" />
-                                        </td>
-                                    </tr>
-                                ))
+                                currentSuppliers.map((supplier) => {
+                                    const isSaved = savedSuppliers.some(saved => saved.id === supplier.id);
+
+                                    return (
+                                        <tr key={supplier.id} className="hover:bg-gray-50 transition-all duration-200">
+                                            <td className="px-6 py-3 text-left flex items-center justify-start">
+                                                <img 
+                                                    src={supplier.logo} 
+                                                    alt="Logo" 
+                                                    className="w-10 h-10 mr-2 md:w-8 md:h-8" 
+                                                />
+                                                <span className="text-sm md:text-base">{supplier.name}</span>
+                                            </td>
+                                            <td className="px-6 py-3 text-center">{supplier.minKwhLimit}</td>
+                                            <td className="px-6 py-3 text-center">R$ {supplier.costPerKwh}</td>
+                                            <td className="px-6 py-3 text-center">
+                                                <StarRatings rating={supplier.averageRating} starRatedColor="#fbbf24" numberOfStars={5} starDimension="20px" starSpacing="1px" />
+                                            </td>
+                                            <td className="px-6 py-3 text-right">
+                                                <button
+                                                    onClick={() => toggleSavedSupplier(supplier)}
+                                                    className="p-2 rounded-lg focus:ring-2 focus:outline-none transition duration-300 hover:bg-gray-100"
+                                                >
+                                                    {isSaved ? (
+                                                        <BookmarkCheck className="w-6 h-6 text-green-600" />
+                                                    ) : (
+                                                        <Bookmark className="w-6 h-6 text-gray-500 hover:text-green-600" />
+                                                    )}
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    );
+                                })
                             )}
                         </tbody>
                     </table>
                 </div>
-
                 <Pagination
                     totalPages={totalPages}
                     onPageChange={handlePageChange}
                 />
             </div>
-
             <ToastContainer
                 position="top-right"
                 autoClose={3000}
