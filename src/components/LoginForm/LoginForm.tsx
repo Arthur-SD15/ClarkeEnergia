@@ -1,6 +1,7 @@
 import { host } from "../../environmentConfig";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import { AxiosError } from "axios";
 import { cn } from "../../lib/utils";
@@ -8,7 +9,6 @@ import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import axios from "axios";
-import { useEffect } from "react";
 
 export function LoginForm({
   className,
@@ -17,6 +17,10 @@ export function LoginForm({
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  const handleNavigate = () => {
+    navigate("/register");
+  }
 
   const handleGoogleLogin = async () => {
     window.location.href = `${host}/auth/google`;
@@ -135,12 +139,12 @@ export function LoginForm({
       </Button>
       <div className="text-center text-sm">
         Não possui conta?{" "}
-        <a
-          href="/register"
+        <button
+          onClick={handleNavigate}
           className="underline underline-offset-4"
         >
           Criar Conta
-        </a>
+        </button>
       </div>
       <ToastContainer
         position="top-right"
