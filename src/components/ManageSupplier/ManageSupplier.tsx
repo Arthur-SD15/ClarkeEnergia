@@ -5,6 +5,7 @@ import { Edit, Trash, ChevronDown, ChevronUp } from "lucide-react";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { Button } from "../ui/button";
+import { Supplier } from "../../types/interfaces";
 import { AxiosError } from 'axios';
 import axios from "axios";
 import Pagination from "../ui/pagination";
@@ -12,24 +13,11 @@ import CreateSupplierModal from "../Modals/CreateSupplierModal";
 import EditSupplierModal from "../Modals/EditSupplierModal";
 import DeleteSupplierModal from "../Modals/DeleteSupplierModal";
 
-interface Supplier {
-    id: string;
-    name: string;
-    logo: string;
-    state: string;
-    costPerKwh: number;
-    minKwhLimit: number;
-    totalClients: number;
-    averageRating: number;
-    createdAt: Date;
-    updatedAt: Date;
-}
-
 const ManageSupplier = () => {
     const [suppliers, setSuppliers] = useState<Supplier[]>([]);
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-    const [modalAction, setModalAction] = useState<"edit" | "delete" | "visualizar" | "create" | null>(null);
+    const [modalAction, setModalAction] = useState<"edit" | "delete" | "create" | null>(null);
     const [selectedSupplier, setSelectedSupplier] = useState<Supplier | null>(null);
 
     const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
@@ -91,7 +79,7 @@ const ManageSupplier = () => {
         setCurrentPage(page);
     };
 
-    const openModal = (action: "edit" | "delete" | "visualizar" | "create", supplier: Supplier | null) => {
+    const openModal = (action: "edit" | "delete" | "create", supplier: Supplier | null) => {
         setModalAction(action);
         setSelectedSupplier(supplier);
         setIsModalOpen(true);
@@ -306,17 +294,27 @@ const ManageSupplier = () => {
             const loadingToast = toast.loading("Removendo fornecedor...");
     
             try {
-                await axios.delete(`${host}/suppliers/${selectedSupplier.id}`);
-                setSuppliers(suppliers.filter(supplier => supplier.id !== selectedSupplier.id));
+                const response = await axios.delete(`${host}/suppliers/${selectedSupplier.id}`);
                 
-                toast.update(loadingToast, {
-                    render: "Fornecedor removido com sucesso!",
-                    type: "success",
-                    isLoading: false,
-                    autoClose: 3000,
-                });
-    
-                closeModal();
+                if(response.status === 200) {
+                    setSuppliers(suppliers.filter(supplier => supplier.id !== selectedSupplier.id));
+                
+                    toast.update(loadingToast, {
+                        render: "Fornecedor removido com sucesso!",
+                        type: "success",
+                        isLoading: false,
+                        autoClose: 3000,
+                    });
+        
+                    closeModal();
+                } else {
+                    toast.update(loadingToast, {
+                        render: "Erro ao remover fornecedor.",
+                        type: "error",
+                        isLoading: false,
+                        autoClose: 3000,
+                    });
+                }
             } catch (error) {
                 console.error("Erro ao remover fornecedor", error);
                 

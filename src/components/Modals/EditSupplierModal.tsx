@@ -2,19 +2,8 @@ import { useState, useEffect } from "react";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { Button } from "../ui/button";
-
-interface Supplier {
-    id: string;
-    name: string;
-    logo: string;
-    state: string;
-    costPerKwh: number;
-    minKwhLimit: number;
-    totalClients: number;
-    averageRating: number;
-    createdAt: Date;
-    updatedAt: Date;
-}
+import { Supplier } from "../../types/interfaces";
+import { estados } from "../../data/estados";
 
 interface EditSupplierModalProps {
     closeModal: () => void;
@@ -42,36 +31,6 @@ const EditSupplierModal = ({ closeModal, handleEditSupplier, supplier }: EditSup
             setAverageRating(supplier.averageRating);
         }
     }, [supplier]);
-
-    const estados = [
-        { nome: "Acre", sigla: "AC" },
-        { nome: "Alagoas", sigla: "AL" },
-        { nome: "Amapá", sigla: "AP" },
-        { nome: "Amazonas", sigla: "AM" },
-        { nome: "Bahia", sigla: "BA" },
-        { nome: "Ceará", sigla: "CE" },
-        { nome: "Distrito Federal", sigla: "DF" },
-        { nome: "Espírito Santo", sigla: "ES" },
-        { nome: "Goiás", sigla: "GO" },
-        { nome: "Maranhão", sigla: "MA" },
-        { nome: "Mato Grosso", sigla: "MT" },
-        { nome: "Mato Grosso do Sul", sigla: "MS" },
-        { nome: "Minas Gerais", sigla: "MG" },
-        { nome: "Pará", sigla: "PA" },
-        { nome: "Paraíba", sigla: "PB" },
-        { nome: "Paraná", sigla: "PR" },
-        { nome: "Pernambuco", sigla: "PE" },
-        { nome: "Piauí", sigla: "PI" },
-        { nome: "Rio de Janeiro", sigla: "RJ" },
-        { nome: "Rio Grande do Norte", sigla: "RN" },
-        { nome: "Rio Grande do Sul", sigla: "RS" },
-        { nome: "Rondônia", sigla: "RO" },
-        { nome: "Roraima", sigla: "RR" },
-        { nome: "Santa Catarina", sigla: "SC" },
-        { nome: "São Paulo", sigla: "SP" },
-        { nome: "Sergipe", sigla: "SE" },
-        { nome: "Tocantins", sigla: "TO" },
-    ];
 
     return (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">

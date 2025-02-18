@@ -1,21 +1,8 @@
 import { useState } from "react";
+import { Supplier } from "../../types/interfaces";
 import { X } from "lucide-react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
-
-
-interface Supplier {
-    id: string;
-    name: string;
-    logo: string;
-    state: string;
-    costPerKwh: number;
-    minKwhLimit: number;
-    totalClients: number;
-    averageRating: number;
-    createdAt: Date;
-    updatedAt: Date;
-}
 
 interface DeleteSupplierModalProps {
     supplier: Supplier | null;

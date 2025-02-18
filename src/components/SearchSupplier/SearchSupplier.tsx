@@ -3,29 +3,17 @@ import { useState } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import { Button } from '../ui/button';
 import { Bookmark, BookmarkCheck } from 'lucide-react';
+import { Input } from '../ui/input';
+import { Supplier } from '../../types/interfaces';
 import axios from 'axios';
 import StarRatings from 'react-star-ratings';
 import Pagination from '../ui/pagination';
-import { Input } from '../ui/input';
-
-interface Supplier {
-    id: string;
-    name: string;
-    logo: string;
-    state: string;
-    costPerKwh: number;
-    minKwhLimit: number;
-    totalClients: number;
-    averageRating: number;
-    createdAt: Date;
-    updatedAt: Date;
-}
 
 const SearchSupplier = () => {
-    const [consumption, setConsumption] = useState<number>(0);
-    const [message, setMessage] = useState<string>("");
     const [savedSuppliers, setSavedSuppliers] = useState<Supplier[]>([]);
     const [suppliers, setSuppliers] = useState<Supplier[]>([]);
+    const [consumption, setConsumption] = useState<number>(0);
+    const [message, setMessage] = useState<string>("");
     const [currentPage, setCurrentPage] = useState<number>(1);
     const itemsPerPage = 5;
 
@@ -39,10 +27,6 @@ const SearchSupplier = () => {
             setSavedSuppliers([...savedSuppliers, supplier]);
             toast.success(`${supplier.name} foi adicionado aos salvos.`);
         }
-    };
-
-    const handleConsumptionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setConsumption(Number(e.target.value));
     };
 
     const fetchSuppliers = async () => {
@@ -117,7 +101,7 @@ const SearchSupplier = () => {
                         <Input
                             type="number"
                             value={consumption}
-                            onChange={handleConsumptionChange}
+                            onChange={(e) => setConsumption(Number(e.target.value))}
                             placeholder="Informe o consumo (kWh)"
                         />
                         {message && (

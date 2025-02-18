@@ -41,7 +41,18 @@ export function LoginForm({
   const handleEmailLogin = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const loadingToast = toast.loading("Carregando...");
-  
+
+    if(!email || !password) {
+      toast.update(loadingToast, {
+        render: "Preencha todos os campos.",
+        type: "error",
+        isLoading: false,
+        autoClose: 3000,
+      });
+
+      return;
+    }
+    
     try {
       const response = await axios.post(
         `${host}/auth/login`,
