@@ -1,5 +1,8 @@
 import { useState } from "react";
 import { X } from "lucide-react";
+import { Button } from "../ui/button";
+import { Input } from "../ui/input";
+
 
 interface Supplier {
     id: string;
@@ -50,21 +53,17 @@ const DeleteSupplierModal = ({ supplier, closeModal, handleDelete }: DeleteSuppl
                     <p className="text-sm text-gray-600 mb-4">
                         Para confirmar a exclusão, digite o nome da fornecedora abaixo
                     </p>
-                    <input
+                    <Input
                         type="text"
                         value={confirmationText}
                         onChange={handleInputChange}
                         placeholder={supplier?.name || "Nome da fornecedora"}
-                        className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg mb-6 transition-all duration-300 "
                     />
-                    <div className="flex justify-between space-x-4">
-                        <button
-                            onClick={closeModal}
-                            className="px-6 py-2 text-sm bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition-all duration-200"
-                        >
+                    <div className="flex justify-between space-x-4 mt-3">
+                        <Button type="button" variant="outline" onClick={closeModal}>
                             Cancelar
-                        </button>
-                        <button
+                        </Button>
+                        <Button
                             onClick={handleConfirmDelete}
                             disabled={!isFormValid}
                             className={`px-6 py-2 rounded-lg text-sm text-white font-semibold ${
@@ -74,7 +73,7 @@ const DeleteSupplierModal = ({ supplier, closeModal, handleDelete }: DeleteSuppl
                             }`}
                         >
                             Confirmar Exclusão
-                        </button>
+                        </Button>
                     </div>
                 </div>
             </div>

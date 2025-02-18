@@ -8,8 +8,9 @@ import { Button } from "../ui/button";
 import { AxiosError } from 'axios';
 import axios from "axios";
 import Pagination from "../ui/pagination";
-import DeleteSupplierModal from "../Modals/DeleteSupplierModal";
 import CreateSupplierModal from "../Modals/CreateSupplierModal";
+import EditSupplierModal from "../Modals/EditSupplierModal";
+import DeleteSupplierModal from "../Modals/DeleteSupplierModal";
 
 interface Supplier {
     id: string;
@@ -205,6 +206,100 @@ const ManageSupplier = () => {
             });
         }
     }
+
+    const handleEditSupplier = async (
+        name: string,
+        logo: string,
+        state: string,
+        costPerKwh: number,
+        minKwhLimit: number,
+        totalClients: number,
+        averageRating: number
+    ) => {
+        if (!selectedSupplier) return;
+    
+        const loadingToast = toast.loading("Atualizando fornecedor...");
+
+        if (!name || !logo || !state || !costPerKwh || !minKwhLimit || !totalClients || !averageRating) {
+            toast.update(loadingToast, {
+                render: "Preencha todos os campos.",
+                type: "error",
+                isLoading: false,
+                autoClose: 3000,
+            });
+            return;
+        }
+
+        if (!logo.endsWith(".png") && !logo.endsWith(".jpg")) {
+            toast.update(loadingToast, {
+                render: "URL da logo inválida.",
+                type: "error",
+                isLoading: false,
+                autoClose: 3000,
+            });
+            return;
+        }
+
+        if (averageRating < 1 || averageRating > 5) {
+            toast.update(loadingToast, {
+                render: "Avaliação inválida.",
+                type: "error",
+                isLoading: false,
+                autoClose: 3000,
+            });
+            return;
+        }
+
+        if (totalClients < 0) {
+            toast.update(loadingToast, {
+                render: "Total de clientes inválido.",
+                type: "error",
+                isLoading: false,
+                autoClose: 3000,
+            });
+            return;
+        }
+
+        if (minKwhLimit < 0 || costPerKwh < 0) {
+            toast.update(loadingToast, {
+                render: "Valor inválido.",
+                type: "error",
+                isLoading: false,
+                autoClose: 3000,
+            });
+            return;
+        }
+    
+        try {
+            await axios.put(`${host}/suppliers/${selectedSupplier.id}`, {
+                name,
+                logo,
+                state,
+                costPerKwh,
+                minKwhLimit,
+                totalClients,
+                averageRating,
+            });
+    
+            toast.update(loadingToast, {
+                render: "Fornecedor atualizado com sucesso!",
+                type: "success",
+                isLoading: false,
+                autoClose: 3000,
+            });
+    
+            fetchSuppliers();
+            closeModal();
+        } catch (error) {
+            console.error("Erro ao atualizar fornecedor", error);
+            toast.update(loadingToast, {
+                render: "Erro ao atualizar fornecedor.",
+                type: "error",
+                isLoading: false,
+                autoClose: 3000,
+            });
+        }
+    };
 
     const handleDelete = async () => {
         if (selectedSupplier) {
@@ -414,6 +509,14 @@ const ManageSupplier = () => {
                 <CreateSupplierModal
                     closeModal={closeModal}
                     handleCreateSupplier={handleCreateSupplier}
+                />
+            )}
+
+            {isModalOpen && modalAction === "edit" && (
+                <EditSupplierModal
+                    closeModal={closeModal}
+                    handleEditSupplier={handleEditSupplier}
+                    supplier={selectedSupplier}
                 />
             )}
 

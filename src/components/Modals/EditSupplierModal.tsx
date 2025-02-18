@@ -1,14 +1,28 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { Button } from "../ui/button";
 
-interface CreateSupplierModalProps {
-    closeModal: () => void;
-    handleCreateSupplier: (name: string, logo: string, state: string, costPerKwh: number, minKwhLimit: number, totalClients: number, averageRating: number) => void;
+interface Supplier {
+    id: string;
+    name: string;
+    logo: string;
+    state: string;
+    costPerKwh: number;
+    minKwhLimit: number;
+    totalClients: number;
+    averageRating: number;
+    createdAt: Date;
+    updatedAt: Date;
 }
 
-const CreateSupplierModal = ({ closeModal, handleCreateSupplier }: CreateSupplierModalProps) => {
+interface EditSupplierModalProps {
+    closeModal: () => void;
+    handleEditSupplier: (name: string, logo: string, state: string, costPerKwh: number, minKwhLimit: number, totalClients: number, averageRating: number) => void;
+    supplier: Supplier | null;
+}
+
+const EditSupplierModal = ({ closeModal, handleEditSupplier, supplier }: EditSupplierModalProps) => {
     const [name, setName] = useState("");
     const [logo, setLogo] = useState("");
     const [state, setState] = useState("");
@@ -16,6 +30,18 @@ const CreateSupplierModal = ({ closeModal, handleCreateSupplier }: CreateSupplie
     const [minKwhLimit, setMinKwhLimit] = useState(0);
     const [totalClients, setTotalClients] = useState(0);
     const [averageRating, setAverageRating] = useState(0);
+
+    useEffect(() => {
+        if (supplier) {
+            setName(supplier.name);
+            setLogo(supplier.logo);
+            setState(supplier.state);
+            setCostPerKwh(supplier.costPerKwh);
+            setMinKwhLimit(supplier.minKwhLimit);
+            setTotalClients(supplier.totalClients);
+            setAverageRating(supplier.averageRating);
+        }
+    }, [supplier]);
 
     const estados = [
         { nome: "Acre", sigla: "AC" },
@@ -45,12 +71,12 @@ const CreateSupplierModal = ({ closeModal, handleCreateSupplier }: CreateSupplie
         { nome: "São Paulo", sigla: "SP" },
         { nome: "Sergipe", sigla: "SE" },
         { nome: "Tocantins", sigla: "TO" },
-    ];    
+    ];
 
     return (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
             <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-4xl py-8">
-                <h2 className="text-xl font-bold mb-6">Criar Fornecedor</h2>
+                <h2 className="text-xl font-bold mb-6">Editar Fornecedor</h2>
                 <div>
                     <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-6">
                         <div>
@@ -142,9 +168,9 @@ const CreateSupplierModal = ({ closeModal, handleCreateSupplier }: CreateSupplie
                             Cancelar
                         </Button>
                         <Button
-                            onClick={() => handleCreateSupplier(name, logo, state, costPerKwh, minKwhLimit, totalClients, averageRating)}
+                            onClick={() => handleEditSupplier(name, logo, state, costPerKwh, minKwhLimit, totalClients, averageRating)}
                         >
-                            Criar
+                            Salvar
                         </Button>
                     </div>
                 </div>
@@ -153,4 +179,4 @@ const CreateSupplierModal = ({ closeModal, handleCreateSupplier }: CreateSupplie
     );
 };
 
-export default CreateSupplierModal;
+export default EditSupplierModal;
