@@ -3,7 +3,7 @@ const ImageClarke = () => {
         <div className="dark:bg-black min-h-screen flex flex-col">
             <div className="w-full min-h-screen overflow-hidden relative">
                 <img 
-                    src="https://res.cloudinary.com/dr0nki74e/image/upload/v1732200384/Global%20Solution%202/Start/u8k6kzellhg9cf1ueer0.jpg" 
+                    src="/images/image-login.jpg"
                     alt="Image"
                     className="w-full min-h-screen object-cover"
                 />
